@@ -26,9 +26,9 @@
 
 #define kRequestTimeoutDefault  60
 
-@interface ODAuthenticationViewController() <UIWebViewDelegate>
+@interface ODAuthenticationViewController() <WKNavigationDelegate>  // Ernie Ern2 UIWebVie_wDelegate
 
-@property UIWebView *webView;
+@property WKWebView *webView;   // Ern2
 
 @property NSURLRequest *initialRequest;
 @property (strong, nonatomic) ODEndURLCompletion successCompletion;
@@ -89,10 +89,10 @@
 
 - (void)loadView
 {
-    self.webView = [[UIWebView alloc] init];
-    [self.webView setScalesPageToFit:YES];
+    self.webView = [[WKWebView alloc] init];
+    // Ern2 [self.webView setScalesPageToFit:YES];
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.webView.delegate = self;
+    self.webView.navigationDelegate = self; // Ern2
     self.view = self.webView;
     UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                 target:self
@@ -110,25 +110,52 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.webView stopLoading];
-    self.webView.delegate = nil;
+    self.webView.navigationDelegate = nil;
     [super viewWillDisappear:animated];
 }
 
-#pragma mark - UIWebViewDelegate
+#pragma mark - UI_WebViewDelegate
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
+// Ern2
+
+- (void) webView: (WKWebView *) webView didStartProvisionalNavigation: (null_unspecified WKNavigation *) navigation {
     [self.timer invalidate];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:self.requestTimeout target:self selector:@selector(failWithTimeout) userInfo:nil repeats:NO];
 }
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+/*
+- (void)webViewDidStartLoad:(UIWebVie_w *)webView
 {
+    [self.timer invalidate];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.requestTimeout target:self selector:@selector(failWithTimeout) userInfo:nil repeats:NO];
+} */
+
+- (void) webView: (WKWebView *) webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
     [self.timer invalidate];
     self.timer = nil;
 }
+/*
+- (void)webViewDidFinishLoad:(UIWebVie_w *)webView
+{
+    [self.timer invalidate];
+    self.timer = nil;
+} */
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (void) webView: (WKWebView *) webView decidePolicyForNavigationAction: (WKNavigationAction *) navigationAction decisionHandler: (void (^)(WKNavigationActionPolicy)) decisionHandler {
+    
+    //NSLog(@"[ept] %@   %@", [navigationAction.request.URL absoluteString], [self.endURL absoluteString]);
+    if ([[[navigationAction.request.URL absoluteString] lowercaseString] hasPrefix:[[self.endURL absoluteString] lowercaseString]]){
+        self.isComplete = YES;
+        [self.timer invalidate];
+        self.timer = nil;
+        
+        self.successCompletion(navigationAction.request.URL, nil);
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
+    else decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+/*
+- (BOOL)webView:(UIWebVie_w *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebVie_wNavigationType)navigationType
 {
     if ([[[request.URL absoluteString] lowercaseString] hasPrefix:[[self.endURL absoluteString] lowercaseString]]){
         self.isComplete = YES;
@@ -139,9 +166,37 @@
         return NO;
     }
     return YES;
-}
+} */
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+- (void) webView: (WKWebView *) webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(nonnull NSError *)error {
+    
+    [self.timer invalidate];
+    self.timer = nil;
+    
+    if (NSURLErrorCancelled == error.code)
+    {
+        //This is a common error that webview generates and could be ignored.
+        //See this thread for details: https://discussions.apple.com/thread/1727260
+        return;
+    }
+    
+    if([error.domain isEqual:@"WebKitErrorDomain"]){
+        return;
+    }
+    
+    // Ignore failures that are triggered after we have found the end URL
+    if (self.isComplete)
+    {
+        //We expect to get an error here, as we intentionally fail to navigate to the final redirect URL.
+        return;
+    }
+    
+    if (self.successCompletion) {
+        self.successCompletion(nil, error);
+    }
+}
+/*
+- (void)webView:(UIWebVie_w *)webView didFailLoadWithError:(NSError *)error
 {
     [self.timer invalidate];
     self.timer = nil;
@@ -168,12 +223,12 @@
         self.successCompletion(nil, error);
     }
 }
+*/
 
 - (void)failWithTimeout
 {
-    [self webView:self.webView didFailLoadWithError:[NSError errorWithDomain:NSURLErrorDomain
-                                                                    code:NSURLErrorTimedOut
-                                                                userInfo:nil]];
+    [self webView: self.webView didFailNavigation: nil withError: [NSError errorWithDomain: NSURLErrorDomain code: NSURLErrorTimedOut userInfo:nil]];
+    //[self webView:self.webView didFailLoadWithError:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorTimedOut userInfo:nil]];
 }
 
 @end
