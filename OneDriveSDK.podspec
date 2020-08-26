@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "OneDriveSDK"
-  s.version      = "1.3.0.2"
+  s.version      = "1.3.0.1"
   s.summary      = "OneDrive iOS SDK"
 
   s.description  = <<-DESC
@@ -44,7 +44,7 @@ Pod::Spec.new do |s|
 
 
   s.subspec "Auth" do |oda|
-    oda.dependency 'ADAL', '~> 1.2', :git => 'https://github.com/YACReader/azure-activedirectory-library-for-objc.git', :branch => '1.2.x'
+    oda.dependency 'ADAL', '~> 1.2'
     oda.dependency 'Base32', '~> 1.1'
     oda.dependency 'OneDriveSDK/Common'
 
