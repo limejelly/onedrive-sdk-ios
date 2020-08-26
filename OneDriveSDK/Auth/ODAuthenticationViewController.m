@@ -24,6 +24,8 @@
 #import "ODAuthHelper.h"
 #import "ODAuthConstants.h"
 
+#import <WebKit/WebKit.h>
+
 #define kRequestTimeoutDefault  60
 
 @interface ODAuthenticationViewController() <WKNavigationDelegate>  // Ernie Ern2 UIWebVie_wDelegate
