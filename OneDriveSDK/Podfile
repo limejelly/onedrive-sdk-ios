@@ -1,8 +1,8 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '6.0'
+ platform :ios, '12.1'
 
 target 'OneDriveSDK' do
-    pod 'ADAL', '~> 1.2'
+    pod 'ADAL', :git => 'https://github.com/phil1923/azure-activedirectory-library-for-objc.git', :branch => '1.2.x'
     pod 'Base32', '~> 1.1'
 end
 
