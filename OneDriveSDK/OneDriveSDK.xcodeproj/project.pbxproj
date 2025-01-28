@@ -140,7 +140,6 @@
 		10FF89C71B4B4424001A2234 /* ODAADAccountBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 10FF89C51B4B4424001A2234 /* ODAADAccountBridge.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		10FF89C81B4B4424001A2234 /* ODAADAccountBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FF89C61B4B4424001A2234 /* ODAADAccountBridge.m */; };
 		28CE8267244D96C3B385DE95 /* libPods-OneDriveSDKTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A80DBCCDB6C761D36FB8CBDD /* libPods-OneDriveSDKTests.a */; };
-		6AA7D8F72D1EECE40023D8CE /* build_framework.sh in Resources */ = {isa = PBXBuildFile; fileRef = 6AA7D8F62D1EECE40023D8CE /* build_framework.sh */; };
 		7CF5250B1CEA7E9B00E7F086 /* ODAsyncOperationStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CF524CE1CEA7E9B00E7F086 /* ODAsyncOperationStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7CF5250C1CEA7E9B00E7F086 /* ODAsyncOperationStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF524CF1CEA7E9B00E7F086 /* ODAsyncOperationStatus.m */; };
 		7CF5250D1CEA7E9B00E7F086 /* ODAudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CF524D01CEA7E9B00E7F086 /* ODAudio.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1453,7 +1452,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6AA7D8F72D1EECE40023D8CE /* build_framework.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
